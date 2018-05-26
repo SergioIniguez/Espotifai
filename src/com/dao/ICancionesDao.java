@@ -16,6 +16,6 @@ import java.util.List;
 public interface ICancionesDao {
     boolean create(Cancion entidad) throws SQLException;
     List<Cancion> read() throws SQLException;
-    boolean update(Cancion entidad) throws SQLException;
-    boolean delete(int num_cancion);
+    boolean update(Cancion entidad, int selCancion) throws SQLException;
+    boolean delete(int num_cancion) throws SQLException;
 }

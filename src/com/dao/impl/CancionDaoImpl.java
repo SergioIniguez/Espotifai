@@ -23,7 +23,7 @@ public class CancionDaoImpl implements ICancionesDao{
     Connection conexion;
     private void conexion(){
         try{
-            Connection conexion = DriverManager.getConnection(cadenaConexion,usuarioDB,passDB);
+            conexion = DriverManager.getConnection(cadenaConexion,usuarioDB,passDB);
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -46,7 +46,7 @@ public class CancionDaoImpl implements ICancionesDao{
         stm.setString(1, entidad.getNombre());
         stm.setString(2, entidad.getArtista());
         boolean ejecutado = stm.executeUpdate() > 0;
-        stm.close();
+        //stm.close();
         cerrarConexion();
         return ejecutado;
     }
@@ -64,6 +64,7 @@ public class CancionDaoImpl implements ICancionesDao{
             cancion.setNum_cancion(resultado.getInt(1));
             cancion.setNombre(resultado.getString(2));
             cancion.setArtista(resultado.getString(3));
+            cancionesLista.add(cancion);
         }
             resultado.close();
             sentencia.close();
@@ -72,21 +73,30 @@ public class CancionDaoImpl implements ICancionesDao{
     }
 
     @Override
-    public boolean update(Cancion entidad) throws SQLException {
+    public boolean update(Cancion entidad, int selCancion) throws SQLException {
         conexion();
-        String updateCancion = "UPDATE canciones SET nombre = ?, artista = ?";
+        String updateCancion = "UPDATE canciones SET nombre = ?, artista = ?"
+                + "WHERE num_cancion = ?";
         PreparedStatement stm = conexion.prepareStatement(updateCancion);
         stm.setString(1, entidad.getNombre());
         stm.setString(2, entidad.getArtista());
+        stm.setInt(3, selCancion);
         boolean ejecutado = stm.executeUpdate()>0;
+        //stm.close();
         cerrarConexion();
-
         return ejecutado;
     }
 
     @Override
-    public boolean delete(int num_cancion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean delete(int num_cancion) throws SQLException {
+        conexion();
+        String deleteCancion = "DELETE FROM canciones WHERE num_cancion = ?";
+        PreparedStatement stm = conexion.prepareStatement(deleteCancion);
+        stm.setInt(1, num_cancion);
+        boolean ejecutado = stm.executeUpdate() > 0;
+        //stm.close();
+        cerrarConexion();
+        return ejecutado;
     }
     
 }
